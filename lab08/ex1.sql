@@ -1,30 +1,28 @@
-DROP INDEX IF EXISTS customer_name_idx, customer_address_idx;
+DROP FUNCTION get_addresses();
+CREATE OR REPLACE FUNCTION get_addresses() RETURNS SETOF VARCHAR(50) AS
+$$
+        SELECT t.address
+        FROM address AS t
+        WHERE t.address LIKE '%11%' AND t.city_id BETWEEN 400 AND 600;
+$$
+    LANGUAGE SQL;
 
--- Explore the generated data and try to query it on pgAdmin (or your
--- preferred tool)
-SELECT customer.name
-FROM customer;
+SELECT * FROM get_addresses();
+-- 1145 Vilnius Manor
+-- 1191 Tandil Drive
+-- 1133 Rizhao Avenue
+-- 1176 Southend-on-Sea Manor
+-- 1411 Lillydale Drive
+-- 1121 Loja Avenue
+-- 117 Boa Vista Way
+-- 1103 Bilbays Parkway
+-- 1192 Tongliao Street
+-- 114 Jalib al-Shuyukh Manor
+-- 1197 Sokoto Boulevard
+-- 1152 al-Qatif Lane
+-- 1101 Bucuresti Boulevard
+-- 1103 Quilmes Boulevard
 
--- Using explain capture the time that take to fetch the data
-EXPLAIN ANALYSE
-SELECT customer.name
-FROM customer;
 
--- Create single-column b-tree and hash indexes on the previously created
--- table using any fields you like (but different fields for each!)
-CREATE INDEX customer_name_idx ON customer (name);
-CREATE INDEX customer_address_idx ON customer (address);
-
--- Using explain shows the elapsed time and the cost and compared with the
---     results obtained before the index creation.
-EXPLAIN ANALYSE
-SELECT *
-FROM customer;
-
--- Is there any difference? Which queries are faster? (If you can’t see the
--- difference try to increase the generated data to 1M)
-
--- Summary
--- without one Planning Time: 0.035 ms | Execution Time: 105.819 ms
--- with index Planning Time: 0.285 ms  | Execution Time: 55.080 ms
--- we see that querying with indexes is two time faster
+ALTER TABLE address ADD COLUMN longitude FLOAT;
+ALTER TABLE address ADD COLUMN latitude FLOAT;
