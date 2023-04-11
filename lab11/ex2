@@ -1,0 +1,29 @@
+1)
+MATCH (fighter:Node)-[:beat]->()
+WHERE fighter.weight IN [155, 170, 185]
+RETURN fighter.weight AS weight, count(DISTINCT fighter) AS num_fighters
+
+2)
+MATCH (f1:Node)-[b1:beat]->(f2:Node)-[b2:beat]->(f1)
+WHERE b1.weight = b2.weight AND f1.name < f2.name
+WITH f1, f2, count(b1) as wins1, count(b2) as wins2
+WHERE wins1 = wins2 AND wins1 = 1
+RETURN f1.name, f2.name
+
+3)
+MATCH (f1:Node)-[b:beat]->()
+WITH f1, count(b) AS wins
+ORDER BY wins DESC LIMIT 1
+MATCH (f2:Node)-[b2:beat]->()
+WITH f2, count(b2) AS wins2, f1, wins
+WHERE wins2 = wins
+RETURN f2.name
+
+4)
+MATCH (f1:Node)
+WHERE NOT (f1)-[:beat]->()
+RETURN collect(f1.name) AS undefeated_fighters, NULL AS defeated_fighters
+UNION
+MATCH (f2:Node)
+WHERE NOT ()-[:beat]->(f2)
+RETURN NULL AS undefeated_fighters, collect(f2.name) AS defeated_fighters
