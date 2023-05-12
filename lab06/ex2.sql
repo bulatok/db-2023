@@ -6,8 +6,7 @@ CREATE TABLE loan_books
  grade VARCHAR(15),
  book VARCHAR(60),
  publisher VARCHAR(30),
- loanDate DATE,
- PRIMARY KEY (???)
+ loanDate DATE
 );
 
 INSERT INTO loan_books VALUES ('Horizon Education Institute', 'Chad Russell', 'Logical Thinking', '1.A01', '1st grade', 'Learning and teaching in early childhood education', 'BOA Editions', '2010-09-09');

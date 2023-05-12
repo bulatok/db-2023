@@ -1,3 +1,4 @@
+import setuptools
 from bson import ObjectId
 from pymongo import MongoClient
 
